@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>payDemo</title>
+	<link rel="stylesheet" href="css/style.css">
+	
+</head>
+<body>
+	<div class="box">
+	  <textarea name="textarea" id="data">{
+	 		    "cpId": 660001,
+	 		    "inputCharset": "UTF-8",
+	 		    "signType": "RSA",
+	 		    "nonceStr": "1505205208780",
+	 		    "sign": "Yuik24p7+22BoTsBdM3mJY1rJneIgjNL5nAWypeHiO8BDUyRRtSJAe4mXePN8ENu+4QGO+VM1eP/JdCofbz6UvkWdmDAmIxdrUgjiZt60/uxeCCIEKCl4UZNGx7g7xVvWQ1mxSNemXjfKDQc20vuSUq+IAZ9t01AWQbeK2KB+/UVEooe4kImkyoNfIwKUIxLo8l3hQUGpQfx7a30aZln3kf6xQk0NLpw2VWJJI7sP1+pByG739SJr5IgMFX3cVY/rQKFgvkMTM84pLrw0jp55yViip+Pn2DXDuQCSYuEoYFWs/c0rfjFZIGwAuMSThvwB8qCXfssLyIP1k+WyFTMwQ==",
+	 		    "cpOrderId": "hb201709121632418067",
+	 		    "transId": "3545009914473472",
+	 		    "payInfo": "{\"appId\":\" wx34d321d8ff64d7a4\",\"nonceStr\":\"tvtetuzh\",\"package\":\"prepay_id=wx201707061510112bbb8b3e580545725040\",\"paySign\":\"90B782B8BF2E6DD2634F46DCF22F06F2\",\"signType\":\"MD5\",\"timeStamp\":\"1499325011210\"}"
+	 		   }</textarea>
+	  <div class="selectbox">
+			<select name="" class="paytype" onChange="payType(this)">
+				<option value="err" selected>请选择支付方式</option>
+				<option value="aliLife">支付宝生活号支付</option>
+				<option value="weixinPub">微信公众号支付</option>
+				<option value="wxPayH5">微信H5支付</option>
+			</select>
+	  </div>
+
+</div>
+	<!-- 页面引用JS_SDK -->
+	<script src="http://yun-technology.cn/jssdk/js/heilPaySDK.js"></script>
+	<script>
+		function payType(channel){
+			//选择的支付渠道
+			var chann = channel.options[channel.selectedIndex].value;
+			if(chann == "err"){
+				return;
+			}
+			//得到的支付凭证
+			var charge = JSON.parse(document.getElementById("data").value);
+			
+			/**
+			*封装符合SDK调的数据格式
+			*payChannel:为支付渠道，暂时支持----aliLife:(支付宝生活号支付),weixinPub(微信公众号支付),wxPayH5(微信H5支付)
+			*charge:为支付凭证，由商家调用平台接口后返回的支付信息
+			**/
+			var dataPay ={
+				payChannel:chann,
+				charge:charge
+			}
+			//实例化HeilPaySDK对象
+			let HeilPay = new HeilPaySDK();
+			//通过createPay统一接口调用
+			HeilPay.createPay(dataPay,(msg,data)=>{
+			  /**
+			  *  回调msg只会返回：成功----"SUCCESS",失败----"ERROR"
+			  *  data返回一个object对象，如：公众号支付，会返回相应的回调参数说明支付是否成功(但不作为商家判断是否成功的条件，商家需按服务端返回的信息为正式依据！)
+			  *
+			  **/
+				console.log(msg,data);
+			});
+		}
+
+		
+
+
+	</script>
+</body>
+</html>
